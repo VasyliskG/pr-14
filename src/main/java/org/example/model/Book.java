@@ -12,10 +12,13 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Data
@@ -23,8 +26,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @NoArgsConstructor
 @Entity
 public class Book {
-  @Id
-  private Long id;
+  @Id private Long id;
 
   @NotBlank(message = "Назва книги не може бути порожньою")
   @Size(min = 2, max = 255, message = "Назва книги повинна бути від 2 до 255 символів")
@@ -50,11 +52,12 @@ public class Book {
   @Positive(message = "Ціна повинна бути додатньою")
   private Double price;
 
+  @ToString.Exclude
+  @EqualsAndHashCode.Exclude
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "book_category",
       joinColumns = @JoinColumn(name = "book_id"),
-      inverseJoinColumns = @JoinColumn(name = "category_id")
-  )
-  private Set<Category> categories;
+      inverseJoinColumns = @JoinColumn(name = "category_id"))
+  private Set<Category> categories = new HashSet<>();
 }
